@@ -19,7 +19,7 @@
         <div class="row justify-content-center align-items-center">
             <div class="col-12 col-sm-8 col-md-12 col-lg-4">
                 <div class="profile-card py-3 card text-center">
-                <?= $this->Form->postLink(['action' => 'delete', $user->id], ['confirm' => __('Are you sure you want to delete # {0}?', $user->id)],['class'=>'fa fa-remove']) ?>
+                <?= $this->Form->postLink(['action' => 'delete', $user->id], ['confirm' => __('Are you sure you want to del//ete # {0}?', $user->id)],['class'=>'fa fa-remove']) ?>
                     <div class="card-body py-4">
                         <img class="profile-picture rounded-circle" src="https://cdna.artstation.com/p/assets/images/images/016/099/486/large/nahmeer-santiago-edcaluag.jpg?1550879823"/>
                         <h2 class="text-dark h5 font-weight-bold mt-4 mb-1">
