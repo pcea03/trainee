@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-
+use Cake\Event\Event;
 /**
  * Users Controller
  *
@@ -17,6 +17,13 @@ class UsersController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
+
+     public function beforeFilter(Event $event)
+     {
+        $this->Auth->allow(['signup']);
+     }
+
+
     public function index()
     {
         $users = $this->paginate($this->Users);
@@ -86,7 +93,7 @@ class UsersController extends AppController
 
     /**
      * Delete method
-     *
+     * 
      * @param string|null $id User id.
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
@@ -102,5 +109,55 @@ class UsersController extends AppController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function login()
+    {
+        if($this->Auth->user('id')){//check if the user is already logged iun
+            $this->Flash->warning(__('You are already logged in'));
+            return $this->redirect(['controller'=>'Users','action'=>'index']);
+        }else{
+        if($this->request->is('post')){
+                $user = $this->Auth->identify();//check if the user exist
+            // pr($user);exit();
+            if($user){
+                $this->Auth->setUser($user);//pass parameter/session
+                $this->Flash->success(__('Login Successful!'));
+                //redirect
+                return $this->redirect(['controller'=>'Users','action'=>'index']);
+            }
+            //display error.
+            $this->Flash->error(__('Ooops, mali ka'));
+        }
+
+        $this->set(compact('user'));
+        $this->set('__serialize',['user']);  
+        }
+    }
+
+    public function logout()
+    {
+        $this->Flash->success('You are now logged out');
+        $this->redirect($this->Auth->logout());
+    }
+
+    public function forgotPassword()
+    {
+        //empty for now.
+    }
+    public function signup()
+    {
+        $user = $this->Users->newEntity();
+        if ($this->request->is('post')) {
+            $user = $this->Users->patchEntity($user, $this->request->getData());
+            // pr($user);exit;
+            if ($this->Users->save($user)) {
+                $this->Flash->success(__('The user has been saved.'));
+
+                return $this->redirect(['action' => 'index']);
+            }
+            $this->Flash->error(__('The user could not be saved. Please, try again.'));
+        }
+        $this->set(compact('user'));
     }
 }
